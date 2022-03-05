@@ -1,0 +1,255 @@
+#pragma warning (disable:4996)
+#include<stdio.h>
+#include<string.h>
+#include<Windows.h> // 콘솔창을 이용하기 위한 헤더파일 ex : system("cls")와 sleep() 함수가 있다.
+#include<stdbool.h> // true를 참으로, false를 거짓으로 나타낼 수 있다.
+#define savename 1000
+typedef struct
+{
+	char name[10]; //이름
+	char number[20]; //전화번호
+	char age[5]; //나이
+	char address[100]; //주소 ex: 강원도 원주시 ***~
+	int i;
+} book; //주소록
+
+int count = 0;
+book a_book[savename];  // 1000이라는 메모리 할당
+
+void reset()
+{
+	int l;
+	for (l = 0; l < savename; l++) // ※주소록이니까 거의 무한에 가깝게 반복을 해야하기 때문에 savename을 넣은 것으로 추정?
+	{
+		a_book[l].name[0] = NULL;  //   -----※ NULL값을 넣는 것인지, 아니면 가독성을 위해 NULL을 넣은것인지?	---|
+		a_book[l].number[0] = NULL; //  |																		   |
+		a_book[l].age[0] = NULL; //	  |																		        |
+		a_book[l].address[0] = NULL; // -------------------------------------------------------------------------
+	}
+}
+
+void save(); // 정보 추가
+void search(); // 정보 검색
+void modify();// 정보 수정
+void print(); // 목록 불러오기
+void del(); // 정보 삭제
+
+int main()
+{
+	int select = 0; // 추가하는 함수
+	int exit = 0; // 종료시 재확인 하는 변수
+	while (TRUE)
+	{
+		printf("\n어떤 기능을 사용하시겠습니까?(번호를 입력해주세요)\n");
+		printf("┌────────────┐\n");
+		printf(" |      1.정보 추가       |\n");
+		printf(" |      2.정보 검색       |\n");
+		printf(" |      3.정보 삭제       |\n");
+		printf(" |      4.정보 수정       |\n");
+		printf(" |      5.목록 불러오기   |\n");
+		printf(" |     6. 종료            |\n");
+		printf("└────────--───┘\n");
+		scanf_s("%d", &select);
+
+		if (select == 1)
+			save(); // 정보 추가 함수
+		else if (select == 2)
+			search(); // 검색 함수
+		else if (select == 3)
+			del();// 정보 삭제
+		else if (select == 4)
+			modify(); // 정보수정
+		else if (select == 5)
+			print();
+		else if (select == 6)
+		{
+			system("cls");
+			printf("정말 종료하시겠습니까?\n (다시 시작:1, 종료:2)");
+			scanf_s("%d", &exit);
+			if (exit == 1)
+			{
+				continue;
+			}
+			else if (exit == 2)
+			{
+				printf("종료합니다.\n");
+				break;
+			}
+		}
+
+		else
+		{
+			system("cls");
+			printf("목록에 없는 번호입니다. \n다시 입력 해 주세요\n");
+		}
+	}
+	system("pause");
+
+	return 0;
+}
+void save()
+{
+	for (int i = 0; i < savename; i++)
+	{
+
+		if (a_book[i].name[0] == NULL)
+		{
+			system("cls");
+			printf("이름: ");
+			scanf("%s%*c", &a_book[i].name);
+			printf("전화번호: ");
+			scanf("%s%*c", &a_book[i].number);
+			printf("나이: ");
+			scanf("%s%*c", &a_book[i].age);
+			printf("주소: ");
+			gets_s(a_book[i].address, sizeof(a_book[i].address));
+
+			break;
+		}
+
+
+
+	}
+}
+
+void search()
+{
+	char s_name[10];
+
+	system("cls");
+	printf("검색 할 이름이 무엇입니까? ");
+	scanf("%s", &s_name); 
+
+	for (int i = 0; i < 1000; i++)
+	{
+		if (strcmp(s_name, a_book[i].name) == 0)
+		{
+			system("cls");
+			printf("%s님은 %s세 이고, 전화번호는 %s, 주소는 %s 입니다. \n", s_name, a_book[i].age, a_book[i].number,a_book[i].address);
+			break;
+		}
+		else
+		{
+			system("cls");
+			printf("입력 된 정보가 없습니다.\n");
+		}
+		if (i == 1000)
+		{
+			system("cls");
+			printf("입력 된 정보가 없습니다.\n");
+			break;
+		}
+		if (a_book[i].name == NULL) {
+			break;
+		}
+	}
+}
+void print()
+{
+	system("cls");
+	for (int i = 0; i < savename; i++)
+	{
+		if (a_book[i].name[0] == NULL)
+			break;
+		printf("이름: %s\n",a_book[i].name);
+		
+		printf("전화번호: %s\n", a_book[i].number);
+		
+		printf("나이: %s\n", a_book[i].age);
+		
+		printf("주소: %s\n", a_book[i].address);
+		printf("------------------------------------------\n");
+		
+	}
+}
+void modify()
+{
+	int change = 0;
+	char s_name[20] = { 0 };
+
+	system("cls");
+	printf("수정하고 싶은 대상의 이름을 입력하세요 : ");
+	scanf("%s", s_name);
+	for (int i = 0; i < savename; i++)
+	{
+		if (strcmp(s_name, a_book[i].name) == 0);
+		{
+			while (TRUE)
+			{
+				system("cls");
+				printf("%s 님의 어떤정보를 수정하시고 싶습니까?(번호를 입력 해주세요)\n(1.이름 2.전화번호 3.나이 4.주소 5. 수정종료)\n", a_book[i].name);
+				scanf("%d%*c", &change);
+				if (change == 1)
+				{
+					system("cls");
+					printf("저장되어 있는 전화번호:%s\n", a_book[i].name);
+					printf("이름 : ");
+					scanf("%s%*c", &a_book[i].name);
+				}
+				else if (change == 2)
+				{
+					system("cls");
+					printf("저장되어 있는 전화번호%s\n", a_book[i].number);
+					printf("전화번호: ");
+					scanf("%s%*c", &a_book[i].number);
+				}
+				else if (change == 3)
+				{
+					system("cls");
+					printf("저장되어 있는 나이%s\n", a_book[i].age);
+					printf("나이: ");
+					scanf("%s%*c", &a_book[i].age);
+				}
+				else if (change == 4)
+				{
+					system("cls");
+					printf("저장되어 있는 주소:%s\n", a_book[i].address);
+					printf("주소: ");
+					gets_s(a_book[i].address, sizeof(a_book[i].address));
+				}
+				else if (change == 5)
+				{
+					break;
+				}
+				else
+				{
+					printf("목록에 없는 번호입니다.\n다시 입력 해주세요! !\n");
+				}
+			}
+			printf("수정 완료\n");
+			break;
+		}
+		if (i == 1000)
+		{
+			system("cls");
+			printf("입력 된 정보가 없습니다.\n");
+			break;
+		}
+	}
+}
+	void del()
+	{
+		char s_name[10];
+
+		system("cls");
+		printf("삭제 할 이름이 무엇입니까?");
+		scanf("%s", &s_name);
+
+		for(int i=0;i<=savename;i++)
+		{
+			if (strcmp(a_book[i].name, s_name) == 0)
+			{
+				for (int j = i; j < savename; j++)
+				{
+					if (a_book[j].name[0] == NULL)
+						break;
+					strcpy(a_book[j].name, a_book[j + 1].name);
+					strcpy(a_book[j].age, a_book[j + 1].age);
+					strcpy(a_book[j].number, a_book[j + 1].number);
+					strcpy(a_book[j].address, a_book[j + 1].address);
+				}
+				printf("삭제하였습니다.");
+			}
+
+		}
+	}
